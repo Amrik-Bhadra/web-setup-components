@@ -2,30 +2,35 @@ const asyncHandler = require("express-async-handler");
 const User = require("../../models/userModel");
 
 const GetUserDetails = asyncHandler(async (req, res) => {
-  const { email } = req.params;
+  const { email } = req.params; 
+
+  if (!email) {
+    return res.status(400).json({
+      message: "Email is required",
+      success: false,
+    });
+  }
+
   try {
-    if (!email) {
-      return res.status(400).json({
-        message: "All fields are mandatory",
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User does not exist",
         success: false,
       });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({
-        message: "User Does Not Exist",
-        success: false,
-      });
-    }
+    const { password, ...userInfo } = user.toObject();
     return res.status(200).json({
-      message: "User Details Fetched Successfully!",
+      message: "User details fetched successfully!",
       success: true,
-      userInfo: user,
+      userInfo,
     });
   } catch (error) {
-    res.status(501).json({
-      message: "User Details Fetching Failed",
+    console.error("Error fetching user details:", error);
+    return res.status(500).json({
+      message: "Internal server error",
       success: false,
     });
   }

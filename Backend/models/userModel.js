@@ -1,44 +1,77 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    unique: true,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    phone: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    contactNumber: {
+      type: String,
+      required: true,
+    },
+    age: {
+      type: Number,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    selectedCountry: {
+      type: String,
+      required: true,
+    },
+    zipcode: {
+      type: String,
+      required: true,
+    },
+    street: {
+      type: String,
+      required: true,
+    },
+    landmark: {
+      type: String,
+      required: true,
+    },
+    avatar: {
+      type: String,
+    },
+    otp: {
+      type: String,
+    },
   },
-  phone: {
-    type: String,
-    unique: true,
-    sparse: true, // Allows unique constraint on nullable fields
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  avatar: {
-    type: String,
-  },
-  otp: {
-    type: String, // Used for forgot password functionality
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-userSchema.pre("save", function (next) {
-  this.updatedAt = new Date();
-  next();
-});
+  { timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 

@@ -3,14 +3,28 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 
 const register = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    contactNumber,
+    age,
+    gender,
+    city,
+    state,
+    selectedCountry,
+    zipcode,
+    street,
+    landmark,
+  } = req.body;
   try {
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "All fields are mandatory",
-        success: false,
-      });
-    }
+    // if (!firstName || !lastName || !email || !password) {
+    //   return res.status(400).json({
+    //     message: "All fields are mandatory",
+    //     success: false,
+    //   });
+    // }
 
     const existingUser = await User.findOne({ email });
 
@@ -23,9 +37,19 @@ const register = asyncHandler(async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
+      contactNumber,
+      age,
+      gender,
+      city,
+      state,
+      selectedCountry,
+      zipcode,
+      street,
+      landmark,
     });
 
     await newUser.save();

@@ -9,15 +9,15 @@ import {
   MdPhone,
 } from "../../utils/icons_resource";
 
-
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosinstance";
 import InputFieldComponent from "../../components/forms/InputFieldComponent";
 import PasswordFieldComponent from "../../components/forms/PasswordFieldComponent";
-import RadioButtonGroup from '../../components/forms/RadioButtonGroup'
-import DropdownComponent from '../../components/forms/DropdownComponent';
+import RadioButtonGroup from "../../components/forms/RadioButtonGroup";
+import DropdownComponent from "../../components/forms/DropdownComponent";
 import FormBtn from "../../components/forms/FormBtn";
-import SecondaryFormBtn from '../../components/forms/SecondaryFormBtn'
+import SecondaryFormBtn from "../../components/forms/SecondaryFormBtn";
+import axios from "axios";
 
 const RegistrationForm = () => {
   const [page, setPage] = useState(1);
@@ -60,18 +60,21 @@ const RegistrationForm = () => {
       landmark,
       city,
       state,
-      country: selectedCountry,
+      selectedCountry,
       zipcode,
     };
 
     try {
-      const response = await axiosInstance.post(
-        "/saarthi/auth/signup",
-        formData
+      const response = await axios.post(
+        "http://localhost:8000/api/auth/register",
+        formData,
+        {
+          withCredentials: true,
+        }
       );
       console.log("Registration Successful:", response.data);
       alert("Registration Successful!");
-      navigate("/auth/login");
+      navigate("/login");
     } catch (error) {
       console.error(
         "Registration Failed:",
@@ -91,7 +94,6 @@ const RegistrationForm = () => {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center bg-[#333]">
-      
       <div className="w-full max-w-md bg-white rounded-lg p-6 flex flex-col gap-8">
         <header className="flex flex-col items-center gap-1">
           <div className="h-10 w-10 border border-[#e0e0e0] text-primary-txt rounded-lg flex items-center justify-center mb-5 ">
@@ -199,9 +201,9 @@ const RegistrationForm = () => {
                 label="Select Gender"
                 name="gender"
                 options={[
-                  { label: "Male", value: "male" },
-                  { label: "Female", value: "female" },
-                  { label: "Other", value: "other" },
+                  { label: "Male", value: "Male" },
+                  { label: "Female", value: "Female" },
+                  { label: "Other", value: "Other" },
                 ]}
                 selectedValue={gender}
                 onChange={setGender}

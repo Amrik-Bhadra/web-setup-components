@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -17,8 +17,11 @@ import axiosinstance from "../../utils/axiosinstance";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordFieldComponent from "./PasswordFieldComponent";
 import FormBtn from "./FormBtn";
+import { AuthContext } from "../../context/AuthContext";
 
 const LoginForm = () => {
+  const { currentUser, setCurrent, refreshLoginContext, loading, setLoading } =
+    useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,15 +39,19 @@ const LoginForm = () => {
 
     try {
       const response = await axiosinstance.post(
-        "/saarthi/auth/signin",
+        "/auth/login",
         { email, password },
         { withCredentials: true }
       );
 
       if (response.status === 200) {
         toast.success("Login successful!");
-        console.log("User Data:", response.data);
-        navigate("/");
+        setLoading(true);
+        setTimeout(async () => {
+          await refreshLoginContext();
+          setLoading(false);
+          navigate("/");
+        }, 1000);
       }
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
